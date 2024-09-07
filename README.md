@@ -1,66 +1,145 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Leaderboard Application
+**This project is a Leaderboard Application built using a JavaScript frontend framework (React) and Laravel for the backend. The application includes features such as user management, score tracking, sorting, filtering, QR code generation, and scheduled jobs.**
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+### Features
+- Add/Delete users.
+- Update user scores dynamically.
+- Sort users by name or points.
+- Search users by name.
+- Display user details on clicking their name.
+- Group users by score with average age per group.
+- Generate a QR code storing user address after user creation.
+- Scheduled job to track the highest scorer every 5 minutes and store in the winners table.
+### Tech Stack
+- __Frontend__: React
+- __Backend__: Laravel (PHP)
+- __Database__: MySQL
+- __HTTP Client__: Axios (for React to call backend API)
+### Installation Instructions
 
-## About Laravel
+##### Backend Setup (Laravel)
+```git clone <repository-link>```
+```cd leaderboard```
+```composer install```
+```php artisan migrate --seed```
+```php artisan serve```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Your Laravel API will now be running on http://127.0.0.1:8000.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+##### Frontend Setup (React)
+```cd leaderboard/frontend```
+```npm install```
+```npm start```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Your React frontend will now be running on http://localhost:3000.
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### API Endpoints Documentation
+1. GET /api/users
+Description: Retrieves all users in the leaderboard.
+Response:
+```
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "age": 25,
+    "points": 0,
+    "address": "123 Main St"
+  },
+]
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+2. POST /api/users
+Description: Adds a new user.
+Request Body:
+```
+{
+  "name": "John Doe",
+  "age": 25,
+  "address": "123 Main St"
+}
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+3. PATCH /api/users/{id}
+Description: Updates a user's points (+/-).
+Request Body:
+```
+{
+	"points_change": -1
+}
+```
 
-## Laravel Sponsors
+4. DELETE /api/users/{id}
+Description: Deletes a user from the leaderboard.
+Response:
+```
+{
+  "message": "User deleted successfully"
+}
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+5. GET /api/users/grouped-by-score
+Description: Retrieves users grouped by their score, including average age for each group.
+Response:
+```
+{
+  "25": {
+    "names": ["Emma", "Liam"],
+    "average_age": 24.5
+  },
+  "18": {
+    "names": ["Noah"],
+    "average_age": 20
+  }
+}
+```
 
-### Premium Partners
+6. GET /api/users/{id}
+Description: Retrieves details of a specific user.
+Response:
+```
+{
+  "id": 1,
+  "name": "John Doe",
+  "age": 25,
+  "points": 5,
+  "address": "123 Main St"
+}
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Laravel Commands
+#### 1. Generate Dummy Users
+To generate dummy users using the factory, run the following command:
+``` 
+php artisan generate:dummy-users 50
+```
 
-## Contributing
+#### 2. Reset User Scores
+To reset all user scores to zero, run the following command:
+```
+php artisan reset:scores
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+#### 3. Schedule: Run Jobs
+To run the scheduled job manually for testing, use the following command:
+```
+php artisan schedule:run
+```
 
-## Code of Conduct
+API URL: http://127.0.0.1:8000/api/users
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+
+
+
+
+
+
+
+
